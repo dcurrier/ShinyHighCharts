@@ -4,7 +4,7 @@
 \title{Highcharts Heatmap Output}
 \usage{
 highchartsOutput(inputId, width = "100\%", height = "400px",
-  type = c("heatmap"))
+  type = c("heatmap", "column", "boxplot"))
 }
 \arguments{
 \item{inputId}{}
@@ -19,6 +19,8 @@ highchartsOutput(inputId, width = "100\%", height = "400px",
 Render a renderHighHeatmap within an application page.
 }
 \seealso{
-Other shinyhighcharts.elements: \code{\link{renderHighHeatmap}}
+Other shinyhighcharts.elements: \code{\link{renderHighBoxplot}};
+  \code{\link{renderHighColumnChart}};
+  \code{\link{renderHighHeatmap}}
 }
 
