@@ -14,31 +14,110 @@ library(ShinyHighCharts)
 
 shinyServer(function(input, output) {
 
-  output$boxplot <- renderHighBoxplot({
+  cat1=reactive({ rnorm(300, mean=input$mean*2, sd=input$sd) })
+  cat2=reactive({ rnorm(60, mean=input$mean*4, sd=input$sd) })
 
-    data=data.frame(cat1=rnorm(300, mean=100, sd=15), cat2=rnorm(60, mean=80, sd=15))
+  output$boxplot <- renderHighcharts({
 
-    return(list(data=data,
-                title=input$title,
-                subtitle="A thrilling subtitle",
-                xAxisCatagories=c("A", "B"),
-                tooltipHeader="<em>Catagory {point.key}</em><br/>"
-                ))
+    # Highcharts Options
+    myChart=list(
+      credits=list(
+        enabled=FALSE
+      ),
+      chart=list(
+        type='boxplot'
+      ),
+      title=list(
+        text=input$title,
+        align='left'
+      ),
+      subtitle=list(
+        text="The Subtitle",
+        align='left'
+      ),
+      xAxis=list(
+        categories=c("A", "B")
+      ),
+      yAxis=list(
+        title=list(
+          text="Values"
+        )
+      ),
+      tooltip=list(
+        formatHeader="<em>Catagory {point.key}</em><br/>"
+      ),
+      legend=list(
+        enabled=FALSE
+      ),
+
+      series=list(
+        list(
+          name= "Summary",
+          data=list(
+            as.numeric(summary(cat1())[-4]),   # return all columns but the mean
+            as.numeric(summary(cat2())[-4])
+          )
+        )
+      )
+    )
+
+    return(list(chart=myChart))
   } )
 
 
-  output$stripchart <- renderHighBoxplot({
+  output$stripchart <- renderHighcharts({
 
-    data=data.frame(cat1=rnorm(300, mean=100, sd=15), cat2=rnorm(60, mean=80, sd=15))
 
-    return(list(data=data,
-                title=input$title,
-                subtitle="A thrilling subtitle",
-                xAxisCatagories=c("A", "B"),
-                plotBoxes=F,
-                tooltipHeader="",
-                tooltipPointFormat="<span style='color:{series.color}'>\u25CF</span> Value: <b>{point.y}</b><br/>"
-    ))
-  } )
+    # Highcharts Options
+    myChart=list(
+      credits=list(
+        enabled=FALSE
+      ),
+      chart=list(
+        type='boxplot'
+      ),
+      title=list(
+        text=input$title,
+        align='left'
+      ),
+      subtitle=list(
+        text="The Subtitle",
+        align='left'
+      ),
+      xAxis=list(
+        categories=c("A", "B")
+      ),
+      yAxis=list(
+        title=list(
+          text="Values"
+        )
+      ),
+      tooltip=list(
+        pointFormat="<span style='color:{series.color}'>\u25CF</span> Value: <b>{point.y}</b><br/>"
+      ),
+      legend=list(
+        enabled=FALSE
+      ),
+
+      series=list(
+        list(
+          name="Summary",
+          color=getHighchartsColors()[1],
+          type="scatter",
+          data=c(
+            JSONify(data.frame(jitter(rep(0, 300), factor=5), cat1())),   # return all columns but the mean
+            JSONify(data.frame(jitter(rep(1, 60), factor=5), cat2()))
+          ),
+          marker=list(
+            fillColor = '#ffffff',
+            lineWidth = 1,
+            lineColor = getHighchartsColors()[1]
+          )
+        )
+      )
+    )
+
+      return(list(chart=myChart))
+  })
 
 })

@@ -12,7 +12,7 @@ var binding = new Shiny.OutputBinding();
 binding.find = function(scope) {
   // For the given scope, return the set of elements that belong to
   // this binding.
-  return $(scope).find(".highcharts-boxplot");
+  return $(scope).find(".highcharts-arealine");
 };
 
 binding.renderValue = function(el, input) {
@@ -26,7 +26,8 @@ binding.renderValue = function(el, input) {
     return;
   }
 
-  if(input.xAxisCatagories.length > 1 && typeof(input.xAxisCatagories) != 'string') input.xAxisCatagories.map(String);
+  if(input.xAxisCatagories != null && typeof(input.xAxisCatagories) != 'string' &&
+                                                input.xAxisCatagories.length > 1) input.xAxisCatagories.map(String);
 
 
 
@@ -35,7 +36,6 @@ binding.renderValue = function(el, input) {
           enabled: false
         },
         chart: {
-          type: 'boxplot',
           marginTop: input.topMargin,
           marginRight: input.rightMargin,
           marginBottom: input.bottomMargin,
@@ -63,11 +63,15 @@ binding.renderValue = function(el, input) {
             text: input.yTitle
           }
         },
+        tooltip: {
+            crosshairs: true,
+            shared: true
+        },
         legend: {
           enabled: input.legendEnabled
         },
 
-        series: [input.data]
+        series: input.data
 
     });
 
@@ -77,6 +81,6 @@ binding.renderValue = function(el, input) {
 
 
 // Tell Shiny about our new output binding
-Shiny.outputBindings.register(binding, "ShinyHighChart.highcharts-boxplot");
+Shiny.outputBindings.register(binding, "ShinyHighChart.highcharts-arealine");
 
 })();

@@ -29,7 +29,9 @@ binding.renderValue = function(el, input) {
   if(input.xAxisCatagories.length > 1 && typeof(input.xAxisCatagories) != 'string') input.xAxisCatagories.map(String)
 
   $('#'+el.id).highcharts({
-
+        credits:{
+          enabled: false
+        },
         chart: {
           type: 'column',
           marginTop: input.topMargin,
@@ -67,6 +69,10 @@ binding.renderValue = function(el, input) {
         },
         legend: {
           enabled: input.legendEnabled
+        },
+        tooltip: {
+          headerFormat: input.tooltipHeader,
+          pointFormat: input.tooltipPointFormat
         },
         plotOptions: {
             series: {

@@ -33,7 +33,7 @@ shinyUI(fluidPage(
 
     # Show a plot of the generated distribution
     mainPanel(
-      highchartsOutput("columnchart", height="450px", type="column")
+      highchartsOutput("columnchart", height="450px", include=c("base", "export"))
     )
   )
 ))

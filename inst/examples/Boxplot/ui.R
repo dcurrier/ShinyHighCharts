@@ -20,21 +20,21 @@ shinyUI(fluidPage(
       sliderInput("mean",
                   "Mean",
                   min = 0,
-                  max = 1,
-                  value = 0,
+                  max = 100,
+                  value = 50,
                   step=0.1),
       sliderInput("sd",
                   "St Dev",
                   min = 0,
-                  max = 1,
+                  max = 10,
                   value = 1,
-                  step=0.1)
+                  step=1)
     ),
 
     # Show a plot of the generated distribution
     mainPanel(fluidRow(
-      column(6, highchartsOutput("boxplot", height="450px", type="boxplot")),
-      column(6, highchartsOutput("stripchart", height="450px", type="boxplot"))
+      column(6, highchartsOutput("boxplot", height="450px", include=c("base", "more", "export", "no-data") )),
+      column(6, highchartsOutput("stripchart", height="450px", include=c("base", "more", "export", "no-data") ))
     ))
   )
 ))

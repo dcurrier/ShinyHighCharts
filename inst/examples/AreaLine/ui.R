@@ -11,7 +11,7 @@ library(ShinyHighCharts)
 shinyUI(fluidPage(
 
   # Application title
-  titlePanel("Highcharts Heatmap Example"),
+  titlePanel("Highcharts Area Line Chart Example"),
 
   # Sidebar with a slider input for number of bins
   sidebarLayout(
@@ -32,6 +32,6 @@ shinyUI(fluidPage(
     ),
 
     # Show a plot of the generated distribution
-    mainPanel( highchartsOutput("heatmap", height="450px", include=c("base", "heatmap", "exporting", "data", "map") )  )
+    mainPanel( highchartsOutput("arealinechart", height="450px", include=c("base", "more")) )
   )
 ))

@@ -32,7 +32,9 @@ binding.renderValue = function(el, input) {
   if(input.colRange == null) input.colRange = ["#ffffff", Highcharts.getOptions().colors[0]]
 
   $('#'+el.id).highcharts({
-
+        credits:{
+          enabled: false
+        },
         chart: {
           type: 'heatmap',
           marginTop: input.topMargin,
@@ -82,7 +84,10 @@ binding.renderValue = function(el, input) {
           margin: 0,
           symbolHeight: 320
         },
-
+        tooltip: {
+          headerFormat: input.tooltipHeader,
+          pointFormat: input.tooltipPointFormat
+        },
         series: [{
           name: input.seriesName,
           borderWidth: 1,
