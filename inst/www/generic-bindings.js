@@ -26,6 +26,7 @@ binding.renderValue = function(el, input) {
   if(input == null) return;
 
   if( typeof(input.options) != 'undefined' ) Highcharts.setOptions(input.options);
+  if( input.chart.tooltip.formatter != NULL ) input.chart.tooltip.formatter = new Function(input.chart.tooltip.formatter);
 
   $('#'+el.id).highcharts( input.chart );
 
