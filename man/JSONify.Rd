@@ -5,6 +5,10 @@
 \usage{
 JSONify(df, element.names = NULL)
 }
+\arguments{
+\item{df}{A data frame from which the JSON object will be created.  For
+ each row in 'df' an array will be added to the JSON object.}
+}
 \description{
 Converts the rows of a data frame into a list of vectors.
 Optionally, include names for each element.

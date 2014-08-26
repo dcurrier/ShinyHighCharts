@@ -5,7 +5,8 @@
 \usage{
 highchartsOutput(inputId, width = "100\%", height = "400px",
   include = c("base", "more", "3d", "all", "canvas-tools", "data",
-  "drilldown", "exporting", "funnel", "heatmap", "no-data", "solid-gauge"))
+  "drilldown", "exporting", "funnel", "heatmap", "no-data", "solid-gauge",
+  "map"))
 }
 \arguments{
 \item{inputId}{}

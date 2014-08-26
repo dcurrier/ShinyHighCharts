@@ -26,6 +26,9 @@ getHighchartsColors = function() {
 #'
 #' @rdname JSONify
 #'
+#' @param df A data frame from which the JSON object will be created.  For
+#'  each row in 'df' an array will be added to the JSON object.
+#'
 #' @family shinyhighcharts elements
 #'
 #' @export
@@ -38,7 +41,7 @@ JSONify = function(df, element.names=NULL) {
 
   mapply(function(r){
     if( is.null(element.names) ) {
-      unname(df[r, ])
+      unlist(unname(df[r, ]))
     }else{
       t=list()
       for(i in 1:length(element.names) ){
