@@ -19,14 +19,15 @@ binding.renderValue = function(el, input) {
   // This function will be called every time we receive new output
   // values for a line chart from Shiny. The "el" argument is the
   // div for this particular chart.
-  console.debug(input);
-  console.debug(el.id);
 
   // Return Null if input is null
   if(input == null) return;
 
   if( typeof(input.options) != 'undefined' ) Highcharts.setOptions(input.options);
-  if( input.chart.tooltip.formatter != NULL ) input.chart.tooltip.formatter = new Function(input.chart.tooltip.formatter);
+  if( typeof(input.chart.tooltip.formatter) != 'undefined' ) input.chart.tooltip.formatter = new Function(input.chart.tooltip.formatter);
+
+  console.debug(el.id);
+  console.debug(input);
 
   $('#'+el.id).highcharts( input.chart );
 
