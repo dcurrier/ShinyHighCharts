@@ -41,6 +41,10 @@ shinyServer(function(input, output) {
 
     series=list(
       list(
+        events=list(
+          mouseOver=HTML("dimAllElse"),
+          mouseOut=HTML("resetSeries")
+        ),
         name='Line 1',
         data=JSONify(data[, c(1,4)]),
         zIndex=1,
@@ -51,6 +55,10 @@ shinyServer(function(input, output) {
         )
       ),
       list(
+        events=list(
+          mouseOver=HTML("dimAllElse"),
+          mouseOut=HTML("resetSeries")
+        ),
         name='Line 2',
         data=JSONify(data[, c(1,5)]),
         zIndex=1,

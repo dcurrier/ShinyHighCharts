@@ -32,6 +32,6 @@ shinyUI(fluidPage(
     ),
 
     # Show a plot of the generated distribution
-    mainPanel( highchartsOutput("arealinechart", height="450px", include=c("base", "more")) )
+    mainPanel( highchartsOutput("arealinechart", height="450px", include=c("base", "more", "dim-on-hover")) )
   )
 ))

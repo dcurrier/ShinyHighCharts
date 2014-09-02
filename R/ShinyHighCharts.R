@@ -201,10 +201,19 @@ highchartsOutput <- function(inputId, width="100%", height="400px",
     )
   }
 
+  if( "dim-on-hover" %in% include ) {
+    JS = append(JS,
+                tagList(tags$script(src="shinyhighcharts/Custom-Add-Ons/dim-on-hover.js", type="text/javascript"))
+    )
+  }
+
+
+
 
   tagList(
     singleton(tags$head(JS)),
     singleton(tags$head(tags$script(src="shinyhighcharts/generic-bindings.js", type="text/javascript"))),
+    singleton(tags$head(tags$script(src="shinyhighcharts/deepCopy.js", type="text/javascript"))),
 
     # make the container div
     div(id=inputId, class="shiny-bound-output highcharts",
