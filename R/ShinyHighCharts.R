@@ -125,85 +125,85 @@ highchartsOutput <- function(inputId, width="100%", height="400px",
   #### Build script tags ####
   if( "base" %in% include ) {
     JS = append(JS,
-                 tagList(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/highcharts.js", type="text/javascript"))
+                 tagList(singleton(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/highcharts.js", type="text/javascript")))
                 )
   }
 
   if( "more" %in% include ) {
     JS = append(JS,
-                 tagList(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/highcharts-more.js", type="text/javascript"))
+                 tagList(singleton(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/highcharts-more.js", type="text/javascript")))
     )
   }
 
   if( "3d" %in% include ) {
     JS = append(JS,
-                 tagList(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/highcharts-3d.js", type="text/javascript"))
+                 tagList(singleton(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/highcharts-3d.js", type="text/javascript")))
     )
   }
 
   if( "all" %in% include ) {
     JS = append(JS,
-                 tagList(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/highcharts-all.js", type="text/javascript"))
+                 tagList(singleton(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/highcharts-all.js", type="text/javascript")))
     )
   }
 
   if( "canvas-tools" %in% include ) {
     JS = append(JS,
-                 tagList(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/modules/canvas-tools.js", type="text/javascript"))
+                 tagList(singleton(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/modules/canvas-tools.js", type="text/javascript")))
     )
   }
 
   if( "data" %in% include ) {
     JS = append(JS,
-                 tagList(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/modules/data.js", type="text/javascript"))
+                 tagList(singleton(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/modules/data.js", type="text/javascript")))
     )
   }
 
   if( "drilldown" %in% include ) {
     JS = append(JS,
-                 tagList(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/modules/drilldown.js", type="text/javascript"))
+                 tagList(singleton(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/modules/drilldown.js", type="text/javascript")))
     )
   }
 
   if( "exporting" %in% include ) {
     JS = append(JS,
-                 tagList(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/modules/exporting.js", type="text/javascript"))
+                 tagList(singleton(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/modules/exporting.js", type="text/javascript")))
     )
   }
 
   if( "funnel" %in% include ) {
     JS = append(JS,
-                 tagList(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/modules/funnel.js", type="text/javascript"))
+                 tagList(singleton(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/modules/funnel.js", type="text/javascript")))
     )
   }
 
   if( "heatmap" %in% include ) {
     JS = append(JS,
-                 tagList(tags$script(src="shinyhighcharts/Highmaps-1.0.1/js/modules/heatmap.js", type="text/javascript"))
+                 tagList(singleton(tags$script(src="shinyhighcharts/Highmaps-1.0.1/js/modules/heatmap.js", type="text/javascript")))
     )
   }
 
   if( "no-data" %in% include ) {
     JS = append(JS,
-                 tagList(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/modules/no-data-to-display.js", type="text/javascript"))
+                 tagList(singleton(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/modules/no-data-to-display.js", type="text/javascript")))
     )
   }
 
   if( "solid-gauge" %in% include ) {
     JS = append(JS,
-                 tagList(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/modules/solid-gauge.js", type="text/javascript"))
+                 tagList(singleton(tags$script(src="shinyhighcharts/Highcharts-4.0.3/js/modules/solid-gauge.js", type="text/javascript")))
     )
   }
 
   if( "map" %in% include ) {
     JS = append(JS,
-                tagList(tags$script(src="shinyhighcharts/Highmaps-1.0.1/js/modules/map.js", type="text/javascript"))
+                tagList(singleton(tags$script(src="shinyhighcharts/Highmaps-1.0.1/js/modules/map.js", type="text/javascript")))
     )
   }
 
   if( "dim-on-hover" %in% include ) {
     JS = append(JS,
-                tagList(tags$script(src="shinyhighcharts/Custom-Add-Ons/dim-on-hover.js", type="text/javascript"))
+                tagList(singleton(tags$script(src="shinyhighcharts/Custom-Add-Ons/dim-on-hover.js", type="text/javascript")))
     )
   }
 
@@ -211,9 +211,9 @@ highchartsOutput <- function(inputId, width="100%", height="400px",
 
 
   tagList(
-    singleton(tags$head(JS)),
-    singleton(tags$head(tags$script(src="shinyhighcharts/generic-bindings.js", type="text/javascript"))),
-    singleton(tags$head(tags$script(src="shinyhighcharts/deepCopy.js", type="text/javascript"))),
+    tags$head(JS,
+              singleton(tags$script(src="shinyhighcharts/generic-bindings.js", type="text/javascript")),
+              singleton(tags$script(src="shinyhighcharts/deepCopy.js", type="text/javascript"))),
 
     # make the container div
     div(id=inputId, class="shiny-bound-output highcharts",
