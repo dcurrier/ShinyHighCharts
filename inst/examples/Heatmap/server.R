@@ -14,6 +14,30 @@ library(ShinyHighCharts)
 
 shinyServer(function(input, output) {
 
+  output$pointValue <- renderText({
+    rtnArray = input$heatmap
+
+    if( !is.null(rtnArray) ){
+    # Parse Color
+    col = rtnArray$color
+    col = gsub("rgb\\(", "", col)
+    col = gsub("\\)", "", col)
+    rgb = strsplit(col, ",")[[1]]
+    hex = rgb(rgb[1], rgb[2], rgb[3], maxColorValue = 255)
+
+    # Return the heatmap value from click event
+    paste0("X:     ", rtnArray$x, "\n",
+           "Y:     ", rtnArray$y, "\n",
+           "Value: ", rtnArray$value, "\n",
+           "Color: ", hex)
+    }else{
+      paste0("Click on Heatmap to view point information")
+    }
+
+
+  })
+
+
   output$heatmap <- renderHighcharts({
     rows = rep(c(0:15), 24)
 

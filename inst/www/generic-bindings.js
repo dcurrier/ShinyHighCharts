@@ -42,6 +42,20 @@ binding.renderValue = function(el, input) {
         if( typeof(series.events[keys[j]]) != 'undefined' ) {
           input.chart.series[i].events[keys[j]] = new Function(input.chart.series[i].events[keys[j]]);
         }
+
+      }
+    }else{
+      input.chart.series[i].point = new Object();
+      input.chart.series[i].point.events = new Object();
+      input.chart.series[i].point.events['click'] = function(){
+        var attr = { x: this.x,
+                     y: this.y,
+                     value: this.value,
+                     color: this.color  };
+
+          console.debug(attr);
+
+          Shiny.onInputChange(el.id, attr);
       }
     }
   }

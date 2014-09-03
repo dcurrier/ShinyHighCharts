@@ -28,7 +28,9 @@ shinyUI(fluidPage(
                   min = 0,
                   max = 1,
                   value = 1,
-                  step=0.1)
+                  step=0.1),
+      hr(),
+      verbatimTextOutput('pointValue')
     ),
 
     # Show a plot of the generated distribution
