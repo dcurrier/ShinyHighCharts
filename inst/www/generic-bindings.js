@@ -31,7 +31,9 @@ binding.renderValue = function(el, input) {
   if( typeof(input.options) != 'undefined' ) Highcharts.setOptions(input.options);
 
   // Convert tooltip formatter to a function
-  if( typeof(input.chart.tooltip.formatter) != 'undefined' ) input.chart.tooltip.formatter = new Function(input.chart.tooltip.formatter);
+  if( typeof(input.chart.tooltip) != 'undefined' ){
+    if( typeof(input.chart.tooltip.formatter) != 'undefined' ) input.chart.tooltip.formatter = new Function(input.chart.tooltip.formatter);
+  }
 
   // Convert series events to functions
   for(i=0; i<input.chart.series.length; i++){
@@ -44,21 +46,44 @@ binding.renderValue = function(el, input) {
         }
 
       }
-    }else{
-      input.chart.series[i].point = new Object();
-      input.chart.series[i].point.events = new Object();
-      input.chart.series[i].point.events['click'] = function(){
-        var attr = { x: this.x,
-                     y: this.y,
-                     value: this.value,
-                     color: this.color  };
-
-          console.debug(attr);
-
-          Shiny.onInputChange(el.id, attr);
-      }
     }
   }
+
+  // Convert Series events stored in plotOptions to functions
+  if( typeof(input.chart.plotOptions) != 'undefined' ){
+    if( typeof(input.chart.plotOptions.series.events) != 'undefined' ){
+      var events = input.chart.plotOptions.series.events;
+      var actions = Object.keys(events);
+      console.debug(events);
+      for(i=0; i<actions.length; i++){
+        events[actions[i]] = new Function(events[actions[i]]);
+      }
+    }
+  }else{
+    input.chart.plotOptions = new Object();
+    input.chart.plotOptions.series = new Object();
+  }
+
+  // Setup global 'mouseOver' event to capture current point data
+  input.chart.plotOptions.series.point = new Object();
+  input.chart.plotOptions.series.point.events = new Object();
+  input.chart.plotOptions.series.point.events['mouseOver'] = function(){
+  var attr = { x: this.x,
+               y: this.y,
+               value: this.value,
+                 color: this.color,
+                  name: this.series.name };
+
+      console.debug(attr);
+
+      Shiny.onInputChange(el.id, attr);
+  }
+
+  // Reset to null
+   input.chart.plotOptions.series.point.events['mouseOut'] = function(){
+     Shiny.onInputChange(el.id, null);
+  }
+
 
 
   console.debug(el.id);
