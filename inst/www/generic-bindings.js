@@ -58,6 +58,8 @@ binding.renderValue = function(el, input) {
       for(i=0; i<actions.length; i++){
         events[actions[i]] = new Function(events[actions[i]]);
       }
+    }else{
+      input.chart.plotOptions.series = new Object();
     }
     if( typeof(input.chart.plotOptions.series.point) != 'undefined' && typeof(input.chart.plotOptions.series.point.events) != 'undefined' ){
       var events = input.chart.plotOptions.series.point.events;
