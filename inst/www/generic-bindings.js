@@ -128,7 +128,7 @@ binding.renderValue = function(el, input) {
   console.debug(el.id);
   console.debug(input);
 
-  if( checkNested(input, 'options3d') && checkNested(input.chart.chart.optionsed, 'enabled') && input.chart.chart.optionsed.enabled ){
+  if( checkNested(input.chart.chart, 'options3d') && checkNested(input.chart.chart.options3d, 'enabled') && input.chart.chart.options3d.enabled ){
     // Give the points a 3D feel by adding a radial gradient
     console.debug('setting 3d effects...');
     Highcharts.getOptions().colors = $.map(Highcharts.getOptions().colors, function (color) {
