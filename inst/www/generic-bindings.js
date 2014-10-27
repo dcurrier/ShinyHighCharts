@@ -30,54 +30,70 @@ binding.renderValue = function(el, input) {
   // Set plot options if they are specified
   if( typeof(input.options) != 'undefined' ) Highcharts.setOptions(input.options);
 
-  // Convert tooltip formatter to a function
-  if( typeof(input.chart.tooltip) != 'undefined' ){
-    if( typeof(input.chart.tooltip.formatter) != 'undefined' ) input.chart.tooltip.formatter = new Function(input.chart.tooltip.formatter);
-  }
 
-  // Convert series events to functions
-  for(i=0; i<input.chart.series.length; i++){
-    var series = input.chart.series[i];
-    if( typeof(series.events) != 'undefined' ){
-      var keys = Object.keys(series.events);
-      for(j=0; j<keys.length; j++){
-        if( typeof(series.events[keys[j]]) != 'undefined' ) {
-          input.chart.series[i].events[keys[j]] = new Function(input.chart.series[i].events[keys[j]]);
+  // Convert string representations of functions to actual functions
+  // Remove elements with type 'object' and length 0
+  // First we need to declare the iterate function
+  function iterate(obj, stack) {
+        for (var property in obj) {
+            //console.debug(obj[property]);
+            if (obj.hasOwnProperty(property)) {
+                if (typeof obj[property] == "object") {
+                  if( obj[property] == null || obj[property].length == 0 ){
+                    delete obj[property];
+                  }else{
+                    iterate(obj[property], stack + '.' + property);
+                  }
+                } else if(typeof obj[property] == "string" && obj[property].indexOf('function()') !== -1) {
+                    try{
+                      obj[property] = eval("(" + obj[property] + ")");
+                    } catch(e){
+                       console.debug(e);
+                       console.debug(obj[property]);
+                    }
+                }
+            }
         }
-
-      }
     }
+
+  // Now we need to call the iterate function on the input
+  iterate(input.chart, '');
+
+  // Declare function to check for nested arguments
+  function checkNested(obj /*, level1, level2, ... levelN*/) {
+    var args = Array.prototype.slice.call(arguments),
+        obj = args.shift();
+
+    for (var i = 0; i < args.length; i++) {
+      if (!obj || !obj.hasOwnProperty(args[i])) {
+        return false;
+      }
+      obj = obj[args[i]];
+    }
+    return true;
   }
 
-  // Convert Series events stored in plotOptions to functions
-  if( typeof(input.chart.plotOptions) != 'undefined' ){
-    if( typeof(input.chart.plotOptions.series) != 'undefined' && typeof(input.chart.plotOptions.series.events) != 'undefined'){
-      var events = input.chart.plotOptions.series.events;
-      var actions = Object.keys(events);
-      console.debug(events);
-      for(i=0; i<actions.length; i++){
-        events[actions[i]] = new Function(events[actions[i]]);
-      }
-    }else{
-      input.chart.plotOptions.series = new Object();
-    }
-    if( typeof(input.chart.plotOptions.series.point) != 'undefined' && typeof(input.chart.plotOptions.series.point.events) != 'undefined' ){
-      var events = input.chart.plotOptions.series.point.events;
-      var actions = Object.keys(events);
-      console.debug(events);
-      for(i=0; i<actions.length; i++){
-        events[actions[i]] = new Function(events[actions[i]]);
-      }
-    }
-  }else{
-    input.chart.plotOptions = new Object();
-    input.chart.plotOptions.series = new Object();
-  }
 
   // Setup global 'mouseOver' event to capture current point data
-  if( typeof(input.chart.plotOptions.series.point) == 'undefined' ){
-    input.chart.plotOptions.series.point = new Object();
-    input.chart.plotOptions.series.point.events = new Object();
+  try{
+    typeof(input.chart.plotOptions.series.point.events)
+  } catch(e){
+    if(typeof(input.chart.plotOptions) == 'undefined') input.chart.plotOptions = new Object();
+    if(typeof(input.chart.plotOptions.series) == 'undefined') input.chart.plotOptions.series = new Object();
+    if(typeof(input.chart.plotOptions.series.point) == 'undefined') input.chart.plotOptions.series.point = new Object();
+    if(typeof(input.chart.plotOptions.series.point.events) == 'undefined') input.chart.plotOptions.series.point.events = new Object();
+  }
+
+  try{
+    if( input.chart.plotOptions.series.point.events['mouseOver'].indexOf('function()') !== -1 ){
+      input.chart.plotOptions.series.point.events['mouseOver'] = eval("("+ input.chart.plotOptions.series.point.events['mouseOver'] +")");
+    }
+
+    if(input.chart.plotOptions.series.point.events['mouseOver'] == null ||
+        input.chart.plotOptions.series.point.events['mouseOver'].length == 0) {
+      delete input.chart.plotOptions.series.point.events['mouseOver'];
+    }
+  }catch(e){
     input.chart.plotOptions.series.point.events['mouseOver'] = function(){
         var attr = { x: this.x,
                      y: this.y,
@@ -89,21 +105,46 @@ binding.renderValue = function(el, input) {
 
             Shiny.onInputChange(el.id, attr);
         }
-  }else if(typeof(input.chart.plotOptions.series.point.events['mouseOver'])){
-
   }
 
   // Reset to null
-  if( typeof(input.chart.plotOptions.series.point) == 'undefined' ){
-     input.chart.plotOptions.series.point.events['mouseOut'] = function(){
-       Shiny.onInputChange(el.id, null);
-      }
+  try{
+    if( input.chart.plotOptions.series.point.events['mouseOut'].indexOf('function()') !== -1 ){
+      input.chart.plotOptions.series.point.events['mouseOut'] = eval("("+ input.chart.plotOptions.series.point.events['mouseOut'] +")");
+    }
+
+    if(input.chart.plotOptions.series.point.events['mouseOut'] == null ||
+        input.chart.plotOptions.series.point.events['mouseOut'].length == 0) {
+      delete input.chart.plotOptions.series.point.events['mouseOut'];
+    }
+  }catch(e){
+    input.chart.plotOptions.series.point.events['mouseOut'] = function(){
+            Shiny.onInputChange(el.id, null);
+        }
   }
 
 
 
   console.debug(el.id);
   console.debug(input);
+
+  if( checkNested(input, 'options3d') && checkNested(input.chart.chart.optionsed, 'enabled') && input.chart.chart.optionsed.enabled ){
+    // Give the points a 3D feel by adding a radial gradient
+    console.debug('setting 3d effects...');
+    Highcharts.getOptions().colors = $.map(Highcharts.getOptions().colors, function (color) {
+        return {
+            radialGradient: {
+                cx: 0.4,
+                cy: 0.3,
+                r: 0.5
+            },
+            stops: [
+                [0, color],
+                [1, Highcharts.Color(color).brighten(-0.2).get('rgb')]
+            ]
+        };
+    });
+  }
 
   $('#'+el.id).highcharts( input.chart );
 

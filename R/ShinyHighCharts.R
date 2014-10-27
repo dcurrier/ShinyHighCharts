@@ -57,6 +57,30 @@ JSONify = function(df, element.names=NULL) {
 
 
 
+#' Make javascript compatible functions
+#'
+#' Remove newline characters and exessive whitespace.
+#'
+#' @rdname jsFunction
+#'
+#' @param s A character vector representing a Javascript
+#' function.
+#'
+#' @family shinyhighcharts elements
+#'
+#' @export
+jsFunction = function(s){
+  if( length(grep('function()', s)) > 0 ){
+    r = gsub("/\\*(.|$)*?\\*/|(//.*)", "", s, perl = TRUE)
+    r = gsub("[[:space:]]{2,}", "", r)
+  }else{
+    r = s
+  }
+  return(r)
+}
+
+
+
 
 
 
@@ -85,7 +109,13 @@ renderHighcharts <- function(expr, env=parent.frame(), quoted=FALSE){
   installExprFunction(expr, "func", env, quoted)
 
   # Call the function
-  function(){  func()  }
+  function(){
+    l <- func()
+    if( !is.null(l) && typeof(l) == 'list' ){
+      l <- rapply(l, jsFunction, class="character", how="replace")
+    }
+    return(l)
+  }
 }
 
 
