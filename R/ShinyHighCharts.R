@@ -243,7 +243,8 @@ highchartsOutput <- function(inputId, width="100%", height="400px",
   tagList(
     tags$head(JS,
               singleton(tags$script(src="shinyhighcharts/generic-bindings.js", type="text/javascript")),
-              singleton(tags$script(src="shinyhighcharts/deepCopy.js", type="text/javascript"))),
+              singleton(tags$script(src="shinyhighcharts/deepCopy.js", type="text/javascript")),
+              singleton(tags$script(src="shinyhighcharts/helpers.js", type="text/javascript"))),
 
     # make the container div
     div(id=inputId, class="shiny-bound-output highcharts",

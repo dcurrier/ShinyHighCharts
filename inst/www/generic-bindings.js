@@ -33,46 +33,17 @@ binding.renderValue = function(el, input) {
 
   // Convert string representations of functions to actual functions
   // Remove elements with type 'object' and length 0
-  // First we need to declare the iterate function
-  function iterate(obj, stack) {
-        for (var property in obj) {
-            //console.debug(obj[property]);
-            if (obj.hasOwnProperty(property)) {
-                if (typeof obj[property] == "object") {
-                  if( obj[property] == null || obj[property].length == 0 ){
-                    delete obj[property];
-                  }else{
-                    iterate(obj[property], stack + '.' + property);
-                  }
-                } else if(typeof obj[property] == "string" && obj[property].indexOf('function()') !== -1) {
-                    try{
-                      obj[property] = eval("(" + obj[property] + ")");
-                    } catch(e){
-                       console.debug(e);
-                       console.debug(obj[property]);
-                    }
-                }
-            }
-        }
+  cleanUp(input.chart, '');
+
+  // Check for renderTo element, default to element id
+  try{
+    if( typeof(input.chart.chart.renderTo) == 'undefined' ) {
+      input.chart.chart.renderTo = el.id;
     }
-
-  // Now we need to call the iterate function on the input
-  iterate(input.chart, '');
-
-  // Declare function to check for nested arguments
-  function checkNested(obj /*, level1, level2, ... levelN*/) {
-    var args = Array.prototype.slice.call(arguments),
-        obj = args.shift();
-
-    for (var i = 0; i < args.length; i++) {
-      if (!obj || !obj.hasOwnProperty(args[i])) {
-        return false;
-      }
-      obj = obj[args[i]];
-    }
-    return true;
+  }catch(e){
+    if( typeof(input.chart.chart) == 'undefined' ) input.chart.chart = new Object();
+    input.chart.chart.renderTo = el.id;
   }
-
 
   // Setup global 'mouseOver' event to capture current point data
   try{
@@ -131,7 +102,7 @@ binding.renderValue = function(el, input) {
   if( checkNested(input.chart.chart, 'options3d') && checkNested(input.chart.chart.options3d, 'enabled') && input.chart.chart.options3d.enabled ){
     // Give the points a 3D feel by adding a radial gradient
     console.debug('setting 3d effects...');
-    Highcharts.getOptions().colors = $.map(Highcharts.getOptions().colors, function (color) {
+    input.chart.colors = $.map(Highcharts.getOptions().colors, function (color) {
         return {
             radialGradient: {
                 cx: 0.4,
@@ -146,7 +117,43 @@ binding.renderValue = function(el, input) {
     });
   }
 
-  $('#'+el.id).highcharts( input.chart );
+  //$( '#' + el.id ).highcharts( input.chart );
+  var chart = new Highcharts.Chart(input.chart);
+
+  // Add mouse events for rotation
+  if( checkNested(input.chart.chart, 'options3d') && checkNested(input.chart.chart.options3d, 'enabled') && input.chart.chart.options3d.enabled ){
+    // Add mouse events for rotation
+    $(chart.container).bind('mousedown.hc touchstart.hc', function (e) {
+        e = chart.pointer.normalize(e);
+
+        var posX = e.pageX,
+            posY = e.pageY,
+            alpha = chart.options.chart.options3d.alpha,
+            beta = chart.options.chart.options3d.beta,
+            newAlpha,
+            newBeta,
+            sensitivity = 5; // lower is more sensitive
+
+        $(document).bind({
+            'mousemove.hc touchdrag.hc': function (e) {
+                // Run beta
+                newBeta = beta + (posX - e.pageX) / sensitivity;
+                newBeta = Math.min(100, Math.max(-100, newBeta));
+                chart.options.chart.options3d.beta = newBeta;
+
+                // Run alpha
+                newAlpha = alpha + (e.pageY - posY) / sensitivity;
+                newAlpha = Math.min(100, Math.max(-100, newAlpha));
+                chart.options.chart.options3d.alpha = newAlpha;
+
+                chart.redraw(false);
+            },
+            'mouseup touchend': function () {
+                $(document).unbind('.hc');
+            }
+        });
+    });
+  }
 
 
 }
