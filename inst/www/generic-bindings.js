@@ -30,11 +30,6 @@ binding.renderValue = function(el, input) {
   // Set plot options if they are specified
   if( typeof(input.options) != 'undefined' ) Highcharts.setOptions(input.options);
 
-
-  // Convert string representations of functions to actual functions
-  // Remove elements with type 'object' and length 0
-  cleanUp(input.chart, '');
-
   // Check for renderTo element, default to element id
   try{
     if( typeof(input.chart.chart.renderTo) == 'undefined' ) {
@@ -56,11 +51,7 @@ binding.renderValue = function(el, input) {
   }
 
   try{
-    if( input.chart.plotOptions.series.point.events['mouseOver'].indexOf('function()') !== -1 ){
-      input.chart.plotOptions.series.point.events['mouseOver'] = eval("("+ input.chart.plotOptions.series.point.events['mouseOver'] +")");
-    }
-
-    if(input.chart.plotOptions.series.point.events['mouseOver'] == null ||
+   if(input.chart.plotOptions.series.point.events['mouseOver'] == null ||
         input.chart.plotOptions.series.point.events['mouseOver'].length == 0) {
       delete input.chart.plotOptions.series.point.events['mouseOver'];
     }
@@ -80,10 +71,6 @@ binding.renderValue = function(el, input) {
 
   // Reset to null
   try{
-    if( input.chart.plotOptions.series.point.events['mouseOut'].indexOf('function()') !== -1 ){
-      input.chart.plotOptions.series.point.events['mouseOut'] = eval("("+ input.chart.plotOptions.series.point.events['mouseOut'] +")");
-    }
-
     if(input.chart.plotOptions.series.point.events['mouseOut'] == null ||
         input.chart.plotOptions.series.point.events['mouseOut'].length == 0) {
       delete input.chart.plotOptions.series.point.events['mouseOut'];
@@ -94,6 +81,9 @@ binding.renderValue = function(el, input) {
         }
   }
 
+  // Convert string representations of functions to actual functions
+  // Remove elements with type 'object' and length 0
+  cleanUp(input.chart, '');
 
 
   console.debug(el.id);
